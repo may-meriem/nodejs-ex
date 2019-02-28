@@ -80,13 +80,10 @@ objects:
   kind: BuildConfig
   metadata:
     annotations:
-      description: Defines how to build the application
-      openshift.io/generated-by: OpenShiftNewApp
-      template.alpha.openshift.io/wait-for-ready: "true"
+      openshift.io/generated-by: OpenShiftNewBuild
     creationTimestamp: null
     labels:
-      app: ${APP_NAME}
-      template: nodejs-mongodb-example
+      build: ${APP_NAME}
     name: ${APP_NAME}
     namespace: ${DEV_PROJECT}
   spec:
@@ -95,19 +92,15 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: nodejs-mongodb-example:latest
-    postCommit:
-      script: npm test
+        name: ${APP_NAME}:latest
+    postCommit: {}
     resources: {}
     runPolicy: Serial
     source:
-      git:
-        uri: https://github.com/mikes-org/nodejs-ex.git
-      type: Git
+      binary: {}
+      type: Binary
     strategy:
       sourceStrategy:
-        env:
-        - name: NPM_MIRROR
         from:
           kind: ImageStreamTag
           name: nodejs:10
@@ -115,14 +108,11 @@ objects:
       type: Source
     successfulBuildsHistoryLimit: 5
     triggers:
-    - imageChange: {}
-      type: ImageChange
-    - type: ConfigChange
     - github:
-        secret: 44gJXS4BR8XNjG4ldaD0RfIBvfyCYyfkkLpoSaMT
+        secret: ERHcPtKgmU4qhoBEjDvK
       type: GitHub
     - generic:
-        secret: rqVYBbJmJo1THXUngGcujh4bPFjQRvNORK8653J0
+        secret: gNnEKpuxVSh5pQLTrrdk
       type: Generic
   status:
     lastVersion: 0
