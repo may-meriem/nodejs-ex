@@ -3,9 +3,8 @@
 <!-- toc -->
 
 - [Node.js MongoDb CICD sample app on OpenShift!](#node.s-mongodb-cicd-verview)
-  * [N](#creating-new-apps)
-    + [Deploying the Pipeline](#deploy-pipeline)
-    + [Success](#success)
+  * [Deploying the Pipeline](#deploy-pipeline)
+  * [Success](#success)
   * [License](#license)
 
 <!-- tocstop -->
@@ -13,10 +12,14 @@
 ## Node.js MongoDB CICD Overview!
 -----------------
 
-This example will serve a welcome page and the current hit count as stored in a database.
+This example nodejs Openshift CICD Pipeline demonstrates the following:
+* Deploying an applicaiton from a YAML template using parameters
+* Configuring a custom Jenkins Slave using an ConfigMap
+* Promoting an application to multiple environments
+* Configuring a Nodejs Application to use a MongoDB service using Secrets.
 
 
-#### Deploying the Pipeline 
+### Deploying the Pipeline 
 
 oc new-project nodejs-dev
 
@@ -31,7 +34,7 @@ oc policy add-role-to-user admin system:serviceaccount:cicd:jenkins -n nodejs-st
 oc process -f  https://raw.githubusercontent.com/mikes-org/nodejs-ex/master/openshift/templates/nodejs-mongo-cicd.yml -p DEV_PROJECT=nodejs-dev -p STAGE_PROJECT=nodejs-stage -o yaml | oc create -f-
 
 
-#### Success
+### Success
 
 You should now have a Node.js User edit page.
 
