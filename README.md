@@ -20,28 +20,19 @@ This example nodejs Openshift CICD Pipeline demonstrates the following:
 
 
 ### Deploying the Pipeline 
+The following will assume Jenkins will be running in the development project.  The Jenkins instance will be deployed automatically since a pipeline is created assuming this has not been diabled.  You use an existing jenkins project and have the dev a seperate dev project.  In this case you will need to give the Jenkins user rights to the dev project.
 
-        $ oc new-project nodejs-echo \
-        --display-name="nodejs" --description="Sample Node.js app"
+        $ oc new-project nodejs-dev
 
+          oc new-project nodejs-stage
 
+          oc policy add-role-to-user admin system:serviceaccount:nodejs-dev:jenkins -n nodejs-stage
 
-oc new-project nodejs-dev
-
-oc new-project nodejs-stage
-
-From Jenkins Project
-
-oc policy add-role-to-user admin system:serviceaccount:cicd:jenkins -n nodejs-dev
-
-oc policy add-role-to-user admin system:serviceaccount:cicd:jenkins -n nodejs-stage
-
-oc process -f  https://raw.githubusercontent.com/mikes-org/nodejs-ex/master/openshift/templates/nodejs-mongo-cicd.yml -p DEV_PROJECT=nodejs-dev -p STAGE_PROJECT=nodejs-stage -o yaml | oc create -f-
-
+          oc process -f  https://raw.githubusercontent.com/mikes-org/nodejs-ex/master/openshift/templates/nodejs-mongo-cicd.yml -p                    DEV_PROJECT=nodejs-dev -p STAGE_PROJECT=nodejs-stage -o yaml | oc create -f-
 
 ### Success
 
-You should now have a Node.js User edit page.
+After the pipeline has completed you should now have an application that contains a User edit page.
 
 
 ### License
