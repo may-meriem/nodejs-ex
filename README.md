@@ -21,6 +21,11 @@ This example nodejs Openshift CICD Pipeline demonstrates the following:
 
 ### Deploying the Pipeline 
 
+        $ oc new-project nodejs-echo \
+        --display-name="nodejs" --description="Sample Node.js app"
+
+
+
 oc new-project nodejs-dev
 
 oc new-project nodejs-stage
