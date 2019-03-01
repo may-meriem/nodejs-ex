@@ -22,7 +22,7 @@ This example nodejs Openshift CICD Pipeline demonstrates the following:
 ### Deploying the Pipeline 
 The following will assume Jenkins will be running in the development project.  The Jenkins instance will be deployed automatically since a pipeline is created assuming this has not been diabled.  You use an existing jenkins project and have the dev a seperate dev project.  In this case you will need to give the Jenkins user rights to the dev project.
 
-  $ oc new-project nodejs-dev
+    oc new-project nodejs-dev
 
     oc new-project nodejs-stage
 
