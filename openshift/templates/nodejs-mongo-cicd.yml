@@ -475,6 +475,7 @@ objects:
       app: ${APP_NAME}
       template: ${APP_NAME}
     name: ${APP_NAME}
+    namespace ${STAGE_PROJECT}
   spec:
     replicas: 1
     revisionHistoryLimit: 10
