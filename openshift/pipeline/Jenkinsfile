@@ -8,7 +8,7 @@ openshift.withCluster() {
 
 pipeline {
   agent {
-    label 'nodejs8'
+    label 'nodejs'
   }
 
 
