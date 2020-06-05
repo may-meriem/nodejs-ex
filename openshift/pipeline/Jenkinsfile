@@ -8,7 +8,7 @@ openshift.withCluster() {
 
 pipeline {
   agent {
-    label 'nodejs'
+    label 'jenkins-node12'
   }
 
 
@@ -24,6 +24,7 @@ pipeline {
        steps {
          script {
            sh "node --version"
+           sh "yarn -h"
            sh "npm install"
            sh "npm test"
          }
