@@ -37,7 +37,7 @@ pipeline {
        steps {
          script {
             openshift.withCluster() {
-              openshift.withProject(env.DEV_PROJECT) {
+              openshift.withProject("jenkins") {
                 sh "pwd; ls -lrt"
                 openshift.selector("bc", "node-test").startBuild("--from-dir=.", "--wait=true")
               }
