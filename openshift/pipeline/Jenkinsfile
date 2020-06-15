@@ -21,7 +21,11 @@ pipeline {
 
     stage('Unit Test') {
 
-       steps {
+
+	steps {
+      
+         input message: "Wait a sec?", ok: "Promote"
+
          script {
            sh "node --version"
            sh "yarn -h"
