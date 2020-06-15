@@ -25,6 +25,7 @@ pipeline {
          script {
            sh "node --version"
            sh "yarn -h"
+           sh "dos2unix -h"
            sh "npm install"
            sh "npm test"
          }
