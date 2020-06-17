@@ -8,7 +8,7 @@ openshift.withCluster() {
 
 pipeline {
   agent {
-    label 'node12-att'
+    label 'node12-agent'
   }
 
 
