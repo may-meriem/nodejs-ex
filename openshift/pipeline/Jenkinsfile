@@ -24,12 +24,12 @@ pipeline {
 
 	steps {
       
-         input message: "Wait a sec?", ok: "Promote"
+         //input message: "Wait a sec?", ok: "Promote"
 
          script {
            sh "node --version"
-           sh "yarn -h"
-           sh "dos2unix -h"
+           //sh "yarn -h"
+           //sh "dos2unix -h"
            sh "npm install"
            sh "npm test"
          }
