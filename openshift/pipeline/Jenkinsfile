@@ -44,7 +44,7 @@ pipeline {
 
             sh """ 
                 echo "AP: ${APP_NAME}"
-                oc patch bc ssr-app-shell --type=json '-p=[{"op": "replace", "path": "/spec/output/to/name", "value": ${APP_NAME}}]'
+                oc patch bc node-test -n att-dev --type=json '-p=[{"op": "replace", "path": "/spec/output/to/name", "value": ${APP_NAME}}]'
             """
              openshift.withCluster() {
               openshift.withProject(env.DEV_PROJECT) {
