@@ -51,8 +51,10 @@ pipeline {
 
                  sh """  
                     echo "IMAGE: + ${APP_TAG_NAME}"  
-                    ##    oc start-build ssr-app-shell --from-dir=. --wait=true  
-                    oc patch bc nodejs-mongo-db -n att-dev --type='json' -p='[{"op": "replace", "path": "/spec/output/to/name", "value": ${IMAGE_TAG_NAME}}]'  
+                    ##    oc start-build ssr-app-shell --from-dir=. --wait=true 
+
+                    oc patch bc nodejs-mongo-demo -n att-dev --type=json -p='[{"op": "replace", "path": "/spec/output/to/name", "value": ${IMAGE_TAG_NAME}}]'
+                    #oc patch bc nodejs-mongo-db -n att-dev --type=json -p='[{"op": "replace", "path": "/spec/output/to/name", "value": ${IMAGE_TAG_NAME}}]'  
                      build_pod="$(oc start-build nodejs-mongo-demo -n att-dev --from-dir=. | awk '{print $1}')"  
                      oc logs -f "$build_pod"  
                     """
