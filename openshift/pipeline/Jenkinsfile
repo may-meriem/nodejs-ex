@@ -41,7 +41,12 @@ pipeline {
        
        steps {
          script {
-            openshift.withCluster() {
+
+            sh """ 
+                echo "AP: ${APP_NAME}"
+                oc patch bc ssr-app-shell --type=json '-p=[{"op": "replace", "path": "/spec/output/to/name", "value": ${APP_NAME}}]'
+            """
+             openshift.withCluster() {
               openshift.withProject(env.DEV_PROJECT) {
                 sh "pwd; ls -lrt"
                 openshift.selector("bc", "node-test").startBuild("--from-dir=.", "--wait=true")
