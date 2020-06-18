@@ -4,7 +4,7 @@ openshift.withCluster() {
   env.DEV = "${DEV_PROJECT}"
   env.STAGE = "${STAGE_PROJECT}"
   echo "Starting Pipeline for ${APP_NAME}..."
-  env.IMAGE_TAG_NAME = "nodejs-mongo-demo:v1"
+  env.IMAGE_TAG_NAME = "image-registry.openshift-image-registry.svc:5000/att-dev/nodejs-mongo-demo:v3"
 }
 
 pipeline {
@@ -44,7 +44,7 @@ pipeline {
          script {
 
             sh """ 
-                echo "AP: ${APP_NAME}"
+                echo "AP: ${IMAGE_TAG_NAME}"
                 oc patch bc nodejs-mongo-demo -n att-dev --type=json '-p=[{"op": "replace", "path": "/spec/output/to/name", "value": ${IMAGE_TAG_NAME}}]'
             """
              openshift.withCluster() {
