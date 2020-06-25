@@ -45,6 +45,8 @@ pipeline {
 
             env.IMAGE_TAG_NAME = "image-registry.openshift-image-registry.svc:5000/att-dev/nodejs-mongo-demo:v4"
             sh '''
+                df
+                ls -lrt
                 echo "AP: ${IMAGE_TAG_NAME}"
                 oc patch bc nodejs-ex-build -n att-dev --type=json "-p=[{"op": "replace", "path": "/spec/output/to/name", "value": ${IMAGE_TAG_NAME}}]"
 
