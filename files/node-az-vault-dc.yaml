@@ -36,6 +36,7 @@ spec:
         - containerPort: 8080
           protocol: TCP
         resources: {}
+        image: 'nodejs-ex:latest'
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -48,8 +49,8 @@ spec:
             name: azure-vault-config
         - configMapRef:
             name: nodejs-ex-vault-config
-        image: image-registry.openshift-image-registry.svc:5000/att-demo/vault-fetcher:latest
         imagePullPolicy: Always
+        image: 'vault-fetcher:latest'
         name: vault-init
         resources: {}
         terminationMessagePath: /dev/termination-log
@@ -74,6 +75,14 @@ spec:
       from:
         kind: ImageStreamTag
         name: nodejs-ex:latest
+    type: ImageChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - vault-init
+      from:
+        kind: ImageStreamTag
+        name: vault-fetcher:latest
     type: ImageChange
 ---
 apiVersion: v1
