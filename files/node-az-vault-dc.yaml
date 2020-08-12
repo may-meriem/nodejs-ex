@@ -1,0 +1,96 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: nodejs-ex
+    app.kubernetes.io/component: nodejs-ex
+    app.kubernetes.io/instance: nodejs-ex
+  name: nodejs-ex
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    deploymentconfig: nodejs-ex
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        deploymentconfig: nodejs-ex
+    spec:
+      containers:
+      - name: nodejs-ex
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        image: 'nodejs-ex:latest'
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/run/secrets/att.com
+          name: vault-data
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - envFrom:
+        - secretRef:
+            name: azure-vault-config
+        - configMapRef:
+            name: nodejs-ex-vault-config
+        imagePullPolicy: Always
+        image: 'vault-fetcher:latest'
+        name: vault-init
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/run/secrets/att.com
+          name: vault-data
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: vault-data
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - nodejs-ex
+      from:
+        kind: ImageStreamTag
+        name: nodejs-ex:latest
+    type: ImageChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - vault-init
+      from:
+        kind: ImageStreamTag
+        name: vault-fetcher:latest
+    type: ImageChange
+---
+apiVersion: v1
+data:
+  AZ_APP_CERTS: mikes-test-cert:c1ce7ff070a24b44b8f026b67de22ff2
+  AZ_APP_SECRETS: mikes-password:88319362eb7849e9a56022d8ccaa9ade,example-db-password:29556ecb5a0a4b079e2eaf23af1805d1
+  AZ_SECRET_PATH: /var/run/secrets/att.com/
+  AZ_VAULT_NAME: att-test-vault
+kind: ConfigMap
+metadata:
+  name: nodejs-ex-vault-config

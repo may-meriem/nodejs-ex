@@ -4,11 +4,12 @@ openshift.withCluster() {
   env.DEV = "${DEV_PROJECT}"
   env.STAGE = "${STAGE_PROJECT}"
   echo "Starting Pipeline for ${APP_NAME}..."
+  //env.IMAGE_TAG_NAME = "image-registry.openshift-image-registry.svc:5000/att-dev/nodejs-mongo-demo:v3"
 }
 
 pipeline {
   agent {
-    label 'nodejs8'
+    label 'node12-agent'
   }
 
 
@@ -21,9 +22,15 @@ pipeline {
 
     stage('Unit Test') {
 
-       steps {
+
+	steps {
+      
+         //input message: "Wait a sec?", ok: "Promote"
+
          script {
            sh "node --version"
+           //sh "yarn -h"
+           //sh "dos2unix -h"
            sh "npm install"
            sh "npm test"
          }
@@ -32,15 +39,37 @@ pipeline {
 
 
     stage('Build Image') {
-       
+
        steps {
          script {
-            openshift.withCluster() {
-              openshift.withProject(env.DEV_PROJECT) {
-                sh "pwd; ls -lrt"
-                openshift.selector("bc", "${APP_NAME}").startBuild("--from-dir=.", "--wait=true")
-              }
-            }
+
+            env.IMAGE_TAG_NAME = "image-registry.openshift-image-registry.svc:5000/att-dev/nodejs-mongo-demo:v4"
+            sh '''
+                df
+                ls -lrt
+                echo "AP: ${IMAGE_TAG_NAME}"
+                oc patch bc nodejs-ex-build -n att-dev --type=json "-p=[{"op": "replace", "path": "/spec/output/to/name", "value": ${IMAGE_TAG_NAME}}]"
+
+                build_pod=$(oc start-build nodejs-ex-build -n att-dev --from-dir=. --wait=true  | awk "{print $1}")
+                oc logs -f $build_pod
+
+            '''
+
+         }
+       }
+   }
+
+    stage('Smoke Test Image') {
+
+       steps {
+         script {
+
+            env.IMAGE_TAG_NAME = "image-registry.openshift-image-registry.svc:5000/att-dev/nodejs-mongo-demo:v4"
+            sh '''
+                echo "Smoke tesing image: ${IMAGE_TAG_NAME}"
+
+            '''
+
          }
        }
    }

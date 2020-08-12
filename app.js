@@ -77,6 +77,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', users);
 app.use('/userdata', userdata);
 app.use('/', indexRoute);
+app.use('/actuator/heartbeat' , indexRoute);
 
 app.engine('html', require('ejs').renderFile);
 

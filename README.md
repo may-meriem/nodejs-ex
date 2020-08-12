@@ -2,53 +2,40 @@
 
 <!-- toc -->
 
-- [Node.js sample app on OpenShift!](#nodejs-sample-app-on-openshift)
-  * [Creating new apps](#creating-new-apps)
-    + [Create a new app from source code (method 1)](#create-a-new-app-from-source-code-method-1)
-    + [Create a new app from a template (method 2)](#create-a-new-app-from-a-template-method-2)
-    + [Build the app](#build-the-app)
-    + [Deploy the app](#deploy-the-app)
-    + [Configure routing](#configure-routing)
-    + [Create a new app from an image (method 3)](#create-a-new-app-from-an-image-method-3)
-    + [Setting environment variables](#setting-environment-variables)
-    + [Success](#success)
-    + [Pushing updates](#pushing-updates)
-  * [Debugging](#debugging)
-  * [Web UI](#web-ui)
-  * [Looking for help](#looking-for-help)
-  * [Compatibility](#compatibility)
+- [Node.js MongoDb CICD sample app on OpenShift!](#node.s-mongodb-cicd-verview)
+  * [Deploying the Pipeline](#deploy-pipeline)
+  * [Success](#success)
   * [License](#license)
 
 <!-- tocstop -->
 
-## Node.js sample app on OpenShift!
+## Node.js MongoDB CICD Overview!
 -----------------
 
-This example will serve a welcome page and the current hit count as stored in a database.
+This example nodejs Openshift CICD Pipeline demonstrates the following:
+* Deploying an applicaiton from a YAML template using parameters
+* Configuring a custom Jenkins Slave using an ConfigMap
+* Promoting an application to multiple environments
+* Configuring a Nodejs Application to use a MongoDB service using Secrets.
 
 
-### Setup 
+### Deploying the Pipeline 
+The following will assume Jenkins will be running in the development project.  The Jenkins instance will be deployed automatically since a pipeline is created assuming this has not been diabled.  You use an existing jenkins project and have the dev a seperate dev project.  In this case you will need to give the Jenkins user rights to the dev project.
 
-oc new-project nodejs-dev
+    oc new-project nodejs-dev
 
-oc new-project nodejs-stage
+    oc new-project nodejs-stage
 
-From Jenkins Project
+    oc policy add-role-to-user admin system:serviceaccount:nodejs-dev:jenkins -n nodejs-stage
 
-oc policy add-role-to-user admin system:serviceaccount:cicd:jenkins -n nodejs-dev
+    oc process -f  https://raw.githubusercontent.com/mikes-org/nodejs-ex/master/openshift/templates/nodejs-mongo-cicd.yml  \
+       -p DEV_PROJECT=nodejs-dev -p STAGE_PROJECT=nodejs-stage -o yaml | oc create -f-
 
-oc policy add-role-to-user admin system:serviceaccount:cicd:jenkins -n nodejs-stage
+### Success
 
-oc process -f  https://raw.githubusercontent.com/mikes-org/nodejs-ex/master/openshift/templates/nodejs-mongo-cicd.yml -p DEV_PROJECT=nodejs-dev -p STAGE_PROJECT=nodejs-stage -o yaml | oc create -f-
-
-
+After the pipeline has completed you should now have an application that contains a User edit page.
 
 
-#### Success
+### License
 
-You should now have a Node.js User edit page.
-
-#### Pushing updates
-
-Assuming you used the URL of your own forked repository, we can easily push changes and simply repeat the steps above which will trigger the newly built image to be deployed.
-
+This code is dedicated to the public domain to the maximum extent permitted by applicable law, pursuant to [CC0](http://creativecommons.org/publicdomain/zero/1.0/).
