@@ -1,4 +1,4 @@
-apiVersion: template.openshift.io/v1
+-apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
@@ -778,6 +778,5 @@ objects:
     labels:
       app: nodejs-sample-cicd
       role: jenkins-slave
-
 
 
